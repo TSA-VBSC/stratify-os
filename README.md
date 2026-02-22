@@ -1,73 +1,83 @@
-# Welcome to your Lovable project
+Welcome to STRATIFY
 
-## Project info
+STRATIFY is an AI-powered career intelligence platform designed to help users move from uncertainty to clarity through discovery, analysis, strategy, and action.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+Project Info
 
-## How can I edit this code?
+Project Name: STRATIFY
+Description: AI-driven career discovery and planning platform
 
-There are several ways of editing your application.
+How to Edit This Project
 
-**Use Lovable**
+You can work on STRATIFY locally using your preferred development environment.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+Requirements
 
-Changes made via Lovable will be committed automatically to this repo.
+Node.js
 
-**Use your preferred IDE**
+npm
+(Recommended installation via nvm)
+https://github.com/nvm-sh/nvm#installing-and-updating
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+Local Development
+# Clone the repository
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
+# Navigate into the project directory
 cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start the development server
 npm run dev
-```
 
-**Edit a file directly in GitHub**
+The application will start with hot reloading and a local preview.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Edit Directly in GitHub
 
-**Use GitHub Codespaces**
+Navigate to the desired file
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Click the Edit (✏️) icon
 
-## What technologies are used for this project?
+Commit your changes to the repository
 
-This project is built with:
+Use GitHub Codespaces (Optional)
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Open the repository main page
 
-## How can I deploy this project?
+Click Code → Codespaces
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+Create a new Codespace
 
-## Can I connect a custom domain to my Lovable project?
+Edit, commit, and push changes directly in the browser
 
-Yes, you can!
+Technologies Used
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+STRATIFY is built using a modern frontend stack:
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Vite – Fast build and development tooling
+
+TypeScript – Type-safe application logic
+
+React – Component-based user interface
+
+shadcn/ui – Accessible UI components
+
+Tailwind CSS – Utility-first styling
+
+Deployment
+
+To deploy STRATIFY, build the project and host it using any static or cloud hosting provider that supports modern React applications.
+
+npm run build
+
+The production-ready files will be generated in the dist directory.
+
+Custom Domain Support
+
+You can connect a custom domain through your chosen hosting provider by configuring DNS settings to point to the deployed application.
+
+Purpose
+
+STRATIFY transforms resumes, job data, and user preferences into clear, actionable career insights using reasoning-first AI—helping users make confident, informed decisions about their future.
