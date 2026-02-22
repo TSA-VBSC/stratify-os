@@ -1,14 +1,9 @@
-import { useState } from "react";
-import { MapPin, Key } from "lucide-react";
+import { MapPin } from "lucide-react";
 import ChatBot from "@/components/ChatBot";
-import ApiKeyModal, { useApiKey } from "@/components/ApiKeyModal";
 
 const cities = ["San Francisco", "Austin", "New York", "Seattle", "Chicago"];
 
 export default function ArticlesPage() {
-  const { apiKey, setApiKey } = useApiKey();
-  const [showKeyModal, setShowKeyModal] = useState(false);
-
   return (
     <div className="max-w-5xl mx-auto px-6 py-12 space-y-12">
       <h1 className="text-3xl font-bold text-gradient">Articles & Insights</h1>
@@ -37,20 +32,9 @@ export default function ArticlesPage() {
 
       {/* AI Resume Builder */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold">AI Resume Builder</h2>
-          <button
-            onClick={() => setShowKeyModal(true)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-glass-border text-xs text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all"
-          >
-            <Key size={12} />
-            {apiKey ? "Update Key" : "Set Key"}
-          </button>
-        </div>
-        <ChatBot apiKey={apiKey} />
+        <h2 className="text-xl font-semibold">AI Resume Builder</h2>
+        <ChatBot />
       </div>
-
-      <ApiKeyModal open={showKeyModal} onClose={() => setShowKeyModal(false)} onSave={setApiKey} />
     </div>
   );
 }

@@ -1,11 +1,8 @@
 import { useState, useEffect } from "react";
-import { Upload, FileText, Sparkles, Key } from "lucide-react";
+import { Upload, FileText, Sparkles } from "lucide-react";
 import ChatBot from "@/components/ChatBot";
-import ApiKeyModal, { useApiKey } from "@/components/ApiKeyModal";
 
 export default function ResumePage() {
-  const { apiKey, setApiKey } = useApiKey();
-  const [showKeyModal, setShowKeyModal] = useState(false);
   const [resumeText, setResumeText] = useState(() => localStorage.getItem("user_resume_preview") || "");
   const [fileName, setFileName] = useState(() => localStorage.getItem("user_resume_name") || "");
   const [matches, setMatches] = useState<{ title: string; score: number }[]>([]);
@@ -38,16 +35,7 @@ export default function ResumePage() {
 
   return (
     <div className="max-w-5xl mx-auto px-6 py-12 space-y-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-gradient">Resume Intelligence</h1>
-        <button
-          onClick={() => setShowKeyModal(true)}
-          className="flex items-center gap-2 px-4 py-2 rounded-full border border-glass-border text-sm text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all"
-        >
-          <Key size={14} />
-          {apiKey ? "Update API Key" : "Set API Key"}
-        </button>
-      </div>
+      <h1 className="text-3xl font-bold text-gradient">Resume Intelligence</h1>
 
       {/* Upload */}
       <div className="glass-surface p-6">
@@ -103,16 +91,7 @@ export default function ResumePage() {
       </div>
 
       {/* Chatbot */}
-      <ChatBot
-        apiKey={apiKey}
-        onResumeGenerated={(text) => setResumeText(text)}
-      />
-
-      <ApiKeyModal
-        open={showKeyModal}
-        onClose={() => setShowKeyModal(false)}
-        onSave={setApiKey}
-      />
+      <ChatBot onResumeGenerated={(text) => setResumeText(text)} />
     </div>
   );
 }

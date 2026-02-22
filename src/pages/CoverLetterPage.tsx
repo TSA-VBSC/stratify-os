@@ -1,12 +1,9 @@
 import { useState } from "react";
-import { FileText, Loader2, Copy, Check, Key } from "lucide-react";
+import { FileText, Loader2, Copy, Check } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { chatCompletion } from "@/lib/openai";
-import ApiKeyModal, { useApiKey } from "@/components/ApiKeyModal";
 
 export default function CoverLetterPage() {
-  const { apiKey, setApiKey } = useApiKey();
-  const [showKeyModal, setShowKeyModal] = useState(false);
   const [resume, setResume] = useState(() => localStorage.getItem("user_resume_preview") || "");
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
@@ -18,7 +15,7 @@ export default function CoverLetterPage() {
   const tones = ["Professional", "Enthusiastic", "Confident", "Creative"];
 
   const generate = async () => {
-    if (!apiKey || !resume.trim() || !company.trim() || !role.trim()) return;
+    if (!resume.trim() || !company.trim() || !role.trim()) return;
     setLoading(true);
     setLetter("");
 
@@ -30,7 +27,6 @@ Format with markdown.`;
 
     try {
       const reply = await chatCompletion(
-        apiKey,
         [{ role: "user", content: `Write a cover letter for:\nCompany: ${company}\nRole: ${role}\n\nMy Resume:\n${resume}` }],
         systemPrompt
       );
@@ -50,15 +46,9 @@ Format with markdown.`;
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-12 space-y-8">
-      <div className="flex items-center justify-between">
-        <div className="space-y-1">
-          <h1 className="text-3xl font-bold text-gradient">AI Cover Letter Generator</h1>
-          <p className="text-muted-foreground text-sm">Generate tailored cover letters powered by AI.</p>
-        </div>
-        <button onClick={() => setShowKeyModal(true)} className="flex items-center gap-2 px-4 py-2 rounded-full border border-glass-border text-sm text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all">
-          <Key size={14} />
-          {apiKey ? "Update Key" : "Set Key"}
-        </button>
+      <div className="space-y-1">
+        <h1 className="text-3xl font-bold text-gradient">AI Cover Letter Generator</h1>
+        <p className="text-muted-foreground text-sm">Generate tailored cover letters powered by AI.</p>
       </div>
 
       <div className="glass-surface p-6 space-y-5">
@@ -89,11 +79,10 @@ Format with markdown.`;
           <textarea value={resume} onChange={(e) => setResume(e.target.value)} placeholder="Paste your resume..." rows={6} className="w-full bg-muted/30 border border-glass-border rounded-xl p-4 text-foreground placeholder:text-muted-foreground resize-none focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm" />
         </div>
 
-        <button onClick={generate} disabled={loading || !resume.trim() || !company.trim() || !role.trim() || !apiKey} className="flex items-center gap-2 px-8 py-3 rounded-full bg-gradient-to-r from-primary/80 to-primary text-primary-foreground font-medium glow-btn disabled:opacity-50">
+        <button onClick={generate} disabled={loading || !resume.trim() || !company.trim() || !role.trim()} className="flex items-center gap-2 px-8 py-3 rounded-full bg-gradient-to-r from-primary/80 to-primary text-primary-foreground font-medium glow-btn disabled:opacity-50">
           {loading ? <Loader2 size={18} className="animate-spin" /> : <FileText size={18} />}
           {loading ? "Generating..." : "Generate Cover Letter"}
         </button>
-        {!apiKey && <p className="text-xs text-destructive">Set your OpenAI API key first.</p>}
       </div>
 
       {letter && (
@@ -110,8 +99,6 @@ Format with markdown.`;
           </div>
         </div>
       )}
-
-      <ApiKeyModal open={showKeyModal} onClose={() => setShowKeyModal(false)} onSave={setApiKey} />
     </div>
   );
 }

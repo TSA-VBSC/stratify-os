@@ -8,12 +8,11 @@ interface Message {
 }
 
 interface ChatBotProps {
-  apiKey: string;
   onResumeGenerated?: (text: string) => void;
   systemMessage?: string;
 }
 
-export default function ChatBot({ apiKey, onResumeGenerated, systemMessage }: ChatBotProps) {
+export default function ChatBot({ onResumeGenerated, systemMessage }: ChatBotProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -28,7 +27,7 @@ export default function ChatBot({ apiKey, onResumeGenerated, systemMessage }: Ch
   }, [messages]);
 
   const sendMessage = async () => {
-    if (!input.trim() || !apiKey) return;
+    if (!input.trim()) return;
     const userMsg: Message = { role: "user", content: input.trim() };
     const newMsgs = [...messages, userMsg];
     setMessages(newMsgs);
@@ -36,7 +35,7 @@ export default function ChatBot({ apiKey, onResumeGenerated, systemMessage }: Ch
     setLoading(true);
 
     try {
-      const reply = await chatCompletion(apiKey, newMsgs, systemMessage || defaultSystem);
+      const reply = await chatCompletion(newMsgs, systemMessage || defaultSystem);
       const assistantMsg: Message = { role: "assistant", content: reply };
       setMessages([...newMsgs, assistantMsg]);
       if (onResumeGenerated) onResumeGenerated(reply);
@@ -121,13 +120,12 @@ export default function ChatBot({ apiKey, onResumeGenerated, systemMessage }: Ch
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-          placeholder={apiKey ? "Ask about your resume..." : "Set API key first..."}
-          disabled={!apiKey}
-          className="flex-1 px-4 py-3 bg-muted/50 border border-glass-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50"
+          placeholder="Ask about your resume..."
+          className="flex-1 px-4 py-3 bg-muted/50 border border-glass-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
         />
         <button
           onClick={sendMessage}
-          disabled={loading || !input.trim() || !apiKey}
+          disabled={loading || !input.trim()}
           className="p-3 rounded-full bg-gradient-to-r from-primary/80 to-primary text-primary-foreground glow-btn disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Send size={18} />

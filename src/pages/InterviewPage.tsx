@@ -2,8 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import { MessageSquare, Send, Mic, MicOff, Loader2, RotateCcw, User, Bot } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { chatCompletion } from "@/lib/openai";
-import ApiKeyModal, { useApiKey } from "@/components/ApiKeyModal";
-import { Key } from "lucide-react";
 
 interface Message {
   role: "user" | "assistant";
@@ -22,8 +20,6 @@ const roles = [
 ];
 
 export default function InterviewPage() {
-  const { apiKey, setApiKey } = useApiKey();
-  const [showKeyModal, setShowKeyModal] = useState(false);
   const [selectedRole, setSelectedRole] = useState("");
   const [started, setStarted] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -50,13 +46,13 @@ Rules:
 - Format your responses with markdown for readability`;
 
   const startInterview = async () => {
-    if (!apiKey || !selectedRole) return;
+    if (!selectedRole) return;
     setStarted(true);
     setLoading(true);
     setQuestionCount(1);
 
     try {
-      const reply = await chatCompletion(apiKey, [{ role: "user", content: `I'm ready for my ${selectedRole} mock interview.` }], systemPrompt);
+      const reply = await chatCompletion([{ role: "user", content: `I'm ready for my ${selectedRole} mock interview.` }], systemPrompt);
       setMessages([{ role: "assistant", content: reply }]);
     } catch (err: any) {
       setMessages([{ role: "assistant", content: `Error: ${err.message}` }]);
@@ -66,7 +62,7 @@ Rules:
   };
 
   const sendAnswer = async () => {
-    if (!input.trim() || !apiKey) return;
+    if (!input.trim()) return;
     const userMsg: Message = { role: "user", content: input.trim() };
     const newMsgs = [...messages, userMsg];
     setMessages(newMsgs);
@@ -75,7 +71,7 @@ Rules:
     setQuestionCount((c) => c + 1);
 
     try {
-      const reply = await chatCompletion(apiKey, newMsgs, systemPrompt);
+      const reply = await chatCompletion(newMsgs, systemPrompt);
       setMessages([...newMsgs, { role: "assistant", content: reply }]);
     } catch (err: any) {
       setMessages([...newMsgs, { role: "assistant", content: `Error: ${err.message}` }]);
@@ -103,15 +99,9 @@ Rules:
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-12 space-y-8">
-      <div className="flex items-center justify-between">
-        <div className="space-y-1">
-          <h1 className="text-3xl font-bold text-gradient">AI Interview Simulator</h1>
-          <p className="text-muted-foreground text-sm">Practice with an AI interviewer and get real-time feedback.</p>
-        </div>
-        <button onClick={() => setShowKeyModal(true)} className="flex items-center gap-2 px-4 py-2 rounded-full border border-glass-border text-sm text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all">
-          <Key size={14} />
-          {apiKey ? "Update Key" : "Set Key"}
-        </button>
+      <div className="space-y-1">
+        <h1 className="text-3xl font-bold text-gradient">AI Interview Simulator</h1>
+        <p className="text-muted-foreground text-sm">Practice with an AI interviewer and get real-time feedback.</p>
       </div>
 
       {/* Role Selection */}
@@ -135,13 +125,12 @@ Rules:
           </div>
           <button
             onClick={startInterview}
-            disabled={!selectedRole || !apiKey}
+            disabled={!selectedRole}
             className="px-8 py-3 rounded-full bg-gradient-to-r from-primary/80 to-primary text-primary-foreground font-medium glow-btn disabled:opacity-50"
           >
             <MessageSquare size={16} className="inline mr-2" />
             Start Interview
           </button>
-          {!apiKey && <p className="text-xs text-destructive">Set your OpenAI API key first.</p>}
         </div>
       )}
 
@@ -216,8 +205,6 @@ Rules:
           </div>
         </div>
       )}
-
-      <ApiKeyModal open={showKeyModal} onClose={() => setShowKeyModal(false)} onSave={setApiKey} />
     </div>
   );
 }
