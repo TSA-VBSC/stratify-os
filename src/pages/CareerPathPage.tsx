@@ -1,12 +1,9 @@
 import { useState } from "react";
-import { Loader2, Route, Sparkles, Key } from "lucide-react";
+import { Loader2, Route, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { chatCompletion } from "@/lib/openai";
-import ApiKeyModal, { useApiKey } from "@/components/ApiKeyModal";
 
 export default function CareerPathPage() {
-  const { apiKey, setApiKey } = useApiKey();
-  const [showKeyModal, setShowKeyModal] = useState(false);
   const [currentRole, setCurrentRole] = useState("");
   const [dreamRole, setDreamRole] = useState("");
   const [experience, setExperience] = useState("0-2 years");
@@ -16,7 +13,7 @@ export default function CareerPathPage() {
   const expLevels = ["Student", "0-2 years", "3-5 years", "5-10 years", "10+ years"];
 
   const generatePath = async () => {
-    if (!apiKey || !currentRole.trim() || !dreamRole.trim()) return;
+    if (!currentRole.trim() || !dreamRole.trim()) return;
     setLoading(true);
     setPathResult("");
 
@@ -51,7 +48,6 @@ Be specific, practical, and motivating. Include real company names, actual cours
 
     try {
       const reply = await chatCompletion(
-        apiKey,
         [{ role: "user", content: `Current Role: ${currentRole}\nDream Role: ${dreamRole}\nExperience: ${experience}\n\nResume context: ${localStorage.getItem("user_resume_preview") || "No resume uploaded"}` }],
         systemPrompt
       );
@@ -65,15 +61,9 @@ Be specific, practical, and motivating. Include real company names, actual cours
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-12 space-y-8">
-      <div className="flex items-center justify-between">
-        <div className="space-y-1">
-          <h1 className="text-3xl font-bold text-gradient">Career Path Visualizer</h1>
-          <p className="text-muted-foreground text-sm">AI-powered roadmap from where you are to where you want to be.</p>
-        </div>
-        <button onClick={() => setShowKeyModal(true)} className="flex items-center gap-2 px-4 py-2 rounded-full border border-glass-border text-sm text-muted-foreground hover:text-foreground hover:border-primary/30 transition-all">
-          <Key size={14} />
-          {apiKey ? "Update Key" : "Set Key"}
-        </button>
+      <div className="space-y-1">
+        <h1 className="text-3xl font-bold text-gradient">Career Path Visualizer</h1>
+        <p className="text-muted-foreground text-sm">AI-powered roadmap from where you are to where you want to be.</p>
       </div>
 
       <div className="glass-surface p-6 space-y-5">
@@ -99,17 +89,14 @@ Be specific, practical, and motivating. Include real company names, actual cours
           </div>
         </div>
 
-        <button onClick={generatePath} disabled={loading || !currentRole.trim() || !dreamRole.trim() || !apiKey} className="flex items-center gap-2 px-8 py-3 rounded-full bg-gradient-to-r from-primary/80 to-primary text-primary-foreground font-medium glow-btn disabled:opacity-50">
+        <button onClick={generatePath} disabled={loading || !currentRole.trim() || !dreamRole.trim()} className="flex items-center gap-2 px-8 py-3 rounded-full bg-gradient-to-r from-primary/80 to-primary text-primary-foreground font-medium glow-btn disabled:opacity-50">
           {loading ? <Loader2 size={18} className="animate-spin" /> : <Route size={18} />}
           {loading ? "Building Roadmap..." : "Generate Career Path"}
         </button>
-        {!apiKey && <p className="text-xs text-destructive">Set your OpenAI API key first.</p>}
       </div>
 
-      {/* Path visualization */}
       {pathResult && (
         <div className="space-y-4 opacity-0 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-          {/* Visual timeline */}
           <div className="flex items-center justify-center gap-2 py-4">
             <span className="px-4 py-2 rounded-full bg-muted text-sm font-medium">{currentRole}</span>
             <div className="flex items-center gap-1">
@@ -131,8 +118,6 @@ Be specific, practical, and motivating. Include real company names, actual cours
           </div>
         </div>
       )}
-
-      <ApiKeyModal open={showKeyModal} onClose={() => setShowKeyModal(false)} onSave={setApiKey} />
     </div>
   );
 }
